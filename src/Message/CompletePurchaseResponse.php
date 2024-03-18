@@ -55,16 +55,16 @@ class CompletePurchaseResponse extends AbstractResponse
      * Whether the payment is test.
      * @return boolean
      */
-    public function getTestMode()
+    public function getTestMode(): bool
     {
-        return (bool) $this->data['test_ipn'];
+        return (bool)($this->data['test_ipn'] ?? null);
     }
 
     /**
      * {@inheritdoc}
      * @return string
      */
-    public function getTransactionId()
+    public function getTransactionId(): string
     {
         return $this->data['item_number'];
     }
@@ -73,16 +73,16 @@ class CompletePurchaseResponse extends AbstractResponse
      * {@inheritdoc}
      * @return string
      */
-    public function getTransactionReference()
+    public function getTransactionReference(): string
     {
         return $this->data['txn_id'];
     }
 
     /**
-     * Retruns the transatcion status.
+     * Returns the transaction status.
      * @return string
      */
-    public function getTransactionStatus()
+    public function getTransactionStatus(): string
     {
         return $this->data['payment_status'];
     }
@@ -91,9 +91,9 @@ class CompletePurchaseResponse extends AbstractResponse
      * {@inheritdoc}
      * @return string
      */
-    public function getAmount()
+    public function getAmount(): string
     {
-        return $this->data['payment_gross'] ? : $this->data['mc_gross'];
+        return $this->data['payment_gross'] ?? $this->data['mc_gross'];
     }
 
     /**
@@ -109,16 +109,16 @@ class CompletePurchaseResponse extends AbstractResponse
      * {@inheritdoc}
      * @return string
      */
-    public function getFee()
+    public function getFee(): string
     {
-        return $this->data['payment_fee'] ? : $this->data['mc_fee'];
+        return $this->data['payment_fee'] ?? $this->data['mc_fee'];
     }
 
     /**
      * Returns the currency.
      * @return string
      */
-    public function getCurrency()
+    public function getCurrency(): string
     {
         return strtoupper($this->data['mc_currency']);
     }
@@ -127,10 +127,10 @@ class CompletePurchaseResponse extends AbstractResponse
      * Returns the payer "name/email".
      * @return string
      */
-    public function getPayer()
+    public function getPayer(): string
     {
         $payer = $this->data['address_name'] . '/' . $this->data['payer_email'];
-        $charset = strtoupper(str_replace("_", "-", $this->data['charset']));
+        $charset = isset($this->data['charset']) ? strtoupper(str_replace("_", "-", $this->data['charset'])) : mb_detect_encoding($payer, 'auto');
         if ($charset !== 'UTF-8') {
             $payer = iconv($charset, 'UTF-8//IGNORE', $payer);
         }
@@ -142,7 +142,7 @@ class CompletePurchaseResponse extends AbstractResponse
      * Returns the payment date.
      * @return string
      */
-    public function getTime()
+    public function getTime(): string
     {
         return date('c', strtotime($this->data['payment_date']));
     }
