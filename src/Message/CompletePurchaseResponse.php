@@ -93,7 +93,11 @@ class CompletePurchaseResponse extends AbstractResponse
      */
     public function getAmount(): string
     {
-        return $this->data['payment_gross'] ?? $this->data['mc_gross'];
+        if (isset($this->data['payment_gross']) && $this->data['payment_gross'] !== "") {
+            return $this->data['payment_gross'];
+        }
+
+        return $this->data['mc_gross'];
     }
 
     /**
@@ -111,7 +115,11 @@ class CompletePurchaseResponse extends AbstractResponse
      */
     public function getFee(): string
     {
-        return $this->data['payment_fee'] ?? $this->data['mc_fee'];
+        if (isset($this->data['payment_fee']) && $this->data['payment_fee'] !== "") {
+            return $this->data['payment_fee'];
+        }
+
+        return $this->data['mc_fee'];
     }
 
     /**
